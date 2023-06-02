@@ -22,7 +22,6 @@ export default function Login() {
           return rdata.email === value;
         }
         const compare = registerdata.find(already);
-        console.log(compare, "compare");
         if (compare === undefined) {
           return false;
         } else {

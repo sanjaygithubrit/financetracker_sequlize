@@ -2,6 +2,7 @@ import React, { useState, useEffect,useContext } from "react";
 import "../../src/assets/style/Alltransaction.css";
 import { useNavigate } from "react-router-dom";
 
+ 
 export const Table = (prop,deleterecord) => {
 
     const [filterval, setFilval] = useState("");
@@ -14,9 +15,9 @@ export const Table = (prop,deleterecord) => {
         order: "",
         type: "",
     });
-
+    
     useEffect(() => {
-        console.log("asdasda");
+        console.log(prop.all,"prop.all");
         setAlldata(prop.all);
    }, [prop]);
 
@@ -175,7 +176,7 @@ export const Table = (prop,deleterecord) => {
                         .toLowerCase()
                         .includes(e.target.value.toLowerCase()) ||
                     item.toaccount.toLowerCase().includes(e.target.value.toLowerCase()) ||
-                    item.amount.toLowerCase().includes(e.target.value.toLowerCase()) ||
+                    item.amount.toString().includes(e.target.value.toString()) ||
                     item.notes.toLowerCase().includes(e.target.value.toLowerCase())
             );
             setPage(1); 

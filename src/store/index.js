@@ -1,4 +1,4 @@
-import { configureStore }    from '@reduxjs/toolkit'
+import { configureStore }  from '@reduxjs/toolkit'
 
 import transactionSlice from "./slices/Transaction"
 import userSlice from "./slices/Users";

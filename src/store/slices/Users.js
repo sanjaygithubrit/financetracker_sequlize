@@ -15,8 +15,6 @@ const usersSlice = createSlice({
     addUser(state, action){
         // console.log(action.payload,"state");
       const registerdata = action.payload;
-   
-        console.log(registerdata);
       state.push(registerdata);
     //   console.log(state,"statte");
     },

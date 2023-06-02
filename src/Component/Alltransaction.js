@@ -6,37 +6,32 @@ import { useNavigate } from "react-router-dom";
 import { selectgroupby } from "../assets/constant/constant";
 import {useDispatch, useSelector} from "react-redux";
 import { deletetransactiondata } from "../store/slices/Transaction";
-
+import axios from "axios";
 export const Alltransaction = () => {
- 
+
     const [alltransaction, setAlltransaction] = useState([]);
     const [groupby, setGroupby] = useState([]);
     const [grp, setGrp] = useState(false);
     const [groupvalue, setGroupvalue] = useState("");
-    
-    const transactionalldata = useSelector((state)=> state.transactions)
-
+    const [deletedata, setDeletedata] = useState("");
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     useEffect(() => {
-        setAlltransaction(transactionalldata);
-    }, []);
-
+        try {
+            axios.request({
+                method: 'get',
+                url: `/alltransactiondata`,
+          }).then((res)=>{
+            setAlltransaction(res.data);    
+        })
+        } catch (error) {
+            console.log(error);
+        }      
+    }, [deletedata]);
 
     useEffect(() => {
-        console.log(transactionalldata,"dataaaaa");
-        setAlltransaction(transactionalldata);
-       
-    }, [transactionalldata]);
-
-    useEffect(() => {
-        console.log(groupvalue,"sasas");
-        setAlltransaction(transactionalldata);
-        if (groupvalue=="") {
-            
-        } else {
-            console.log("pppp");
+        if (groupvalue!=="") {
             const groupBy = (array, key) => {
                 let sanjay = array.reduce((result, currentValue) => {
                     (result[currentValue[key]] = result[currentValue[key]] || []).push(
@@ -50,13 +45,13 @@ export const Alltransaction = () => {
             if (groupvalue === "none") {
                 setGrp(false)
             } else {
-                const personGroupedByColor = groupBy(transactionalldata, groupvalue);
+                const personGroupedByColor = groupBy(alltransaction, groupvalue);
                 setGroupby(personGroupedByColor);
                 setGrp(true);
             }
         }
             
-    }, [groupvalue,transactionalldata]);
+    }, [groupvalue,alltransaction]);
 
     function Logout() {
         document.cookie=`Token=;max-age=`+0;
@@ -64,7 +59,11 @@ export const Alltransaction = () => {
     }
 
     function deleterecord(d_id) {
-         dispatch(deletetransactiondata(d_id))
+
+        axios.delete(`/deletetransactiondata?id=${d_id}`)
+
+        //  dispatch(deletetransactiondata(d_id))
+         setDeletedata(d_id)
     }
 
     function group(event) {

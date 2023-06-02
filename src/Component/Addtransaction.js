@@ -2,7 +2,7 @@ import {  useEffect, useState } from "react";
 import {  useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import "../../src/assets/style/Alltransaction.css"
-
+import axios from 'axios';
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Link } from "react-router-dom";
@@ -10,6 +10,20 @@ import { useNavigate } from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux"
 import { addtransactiondata,edittransactiondata } from "../store/slices/Transaction";
 import { month,transactiontype,fromaccount,toaccount,transaction } from "../assets/constant/constant";
+// var express = require("express");
+// var cors = require('cors');
+// var app = express();
+
+// app.use(cors());
+
+// const express = require('express');
+// const cors = require('cors');
+
+// const app = express();
+
+// // 👇️ configure CORS
+// app.use(cors());
+
 export const Addtransaction = () => {
 
   const dispatch = useDispatch();
@@ -54,7 +68,18 @@ const transactiondata = useSelector((state)=> state.transactions)
       fromaccount: yup.string().required("From Account  is Required"),
    
       toaccount:yup.string().required("To Account  is Required").notOneOf([yup.ref("fromaccount")],"From and to must not be same") ,
-      amount: yup.string().required("Amount  is Required"),
+      amount: yup.string().test("required","Enter Amount more than 0",(value) => {
+        if (value > 0) {  
+          return true;
+        }
+        return false;
+      }).test("required","Enter Amount",(value) => {
+  
+        if (!isNaN(value)) {  
+          return true;
+        }
+        return false;
+      }),
      receipt:yup.mixed().test("required", "You need to provide a file", (value) => {
       // return file && file.size <-- u can use this if you don't want to allow empty files to be uploaded;
       if (value.length > 0) {  
@@ -106,10 +131,10 @@ function removeimage() {
 
   const onSubmitHandler = async(data) => {
 
-        if (typeof (data.receipt) !== "string") {
+    if (typeof (data.receipt) !== "string") {
       let url = await bs(data.receipt[0])
 
-data.receipt = url;
+data.receipt = url.toString();
   }
 
 if (id) {
@@ -118,16 +143,28 @@ if (id) {
     dispatch(edittransactiondata({id:id,data:editdata}))
   
 } else {
+  let formdata = {...data}
 
-    let newdata= {...data}
-    const len = transactiondata.reduce(sum => sum + 1, 0);
-    const addid = transactiondata[len-1].id 
-    newdata.id = addid+1;
-      dispatch(addtransactiondata(newdata))
+  axios.request({
 
+    method: 'POST',
+    url: `/adtransactiondata`,
+    data: formdata,
+  
+  })
+
+    // let newdata= {...data}
+    // const len = transactiondata.reduce(sum => sum + 1, 0);
+    // const addid = transactiondata[len-1].id 
+    // newdata.id = addid+1;
+    // dispatch(addtransactiondata(newdata))
 }
 reset();
-navigate("/alltransaction");
+function myGreeting() {
+  navigate("/alltransaction");
+}
+setTimeout(myGreeting,1000);
+
   };
 
   return (
@@ -160,7 +197,7 @@ navigate("/alltransaction");
           <div>
             <span className="form__label">Month Year:</span>
             <select
-          name="month"
+             name="month"
              {...register("month", { required: true })}
             >
 
@@ -239,8 +276,8 @@ navigate("/alltransaction");
             <span className="form__label">Amount:</span>
 
             <input
-              type="number"
-              name="amount"
+              type="text"
+             
               {...register("amount", { required: true })}
               placeholder="Enter Amount"
               
@@ -285,6 +322,7 @@ navigate("/alltransaction");
           <br />
           <div>
                   <input className="addtransactionback1" type="submit"></input>
+                  <Link to="/alltransaction"> Alltransaction </Link>
                 </div>     
         </form>
       </div>
