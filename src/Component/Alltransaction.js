@@ -4,9 +4,10 @@ import { Link } from "react-router-dom";
 import { Table } from "./Table";
 import { useNavigate } from "react-router-dom";
 import { selectgroupby } from "../assets/constant/constant";
-import {useDispatch, useSelector} from "react-redux";
-import { deletetransactiondata } from "../store/slices/Transaction";
 import axios from "axios";
+import { Loader  } from "./Loader";
+
+
 export const Alltransaction = () => {
 
     const [alltransaction, setAlltransaction] = useState([]);
@@ -14,43 +15,51 @@ export const Alltransaction = () => {
     const [grp, setGrp] = useState(false);
     const [groupvalue, setGroupvalue] = useState("");
     const [deletedata, setDeletedata] = useState("");
-    const dispatch = useDispatch();
+    const [isloading,setIsloading] = useState(false);
+
+
     const navigate = useNavigate();
 
     useEffect(() => {
-        try {
+        setIsloading(true)
+        function myGreeting() {
+            setIsloading(false)
             axios.request({
                 method: 'get',
                 url: `/alltransactiondata`,
           }).then((res)=>{
-            setAlltransaction(res.data);    
+            setAlltransaction(res.data);
         })
-        } catch (error) {
-            console.log(error);
-        }      
+          }
+          setTimeout(myGreeting,1000);
     }, [deletedata]);
 
     useEffect(() => {
         if (groupvalue!=="") {
-            const groupBy = (array, key) => {
-                let sanjay = array.reduce((result, currentValue) => {
-                    (result[currentValue[key]] = result[currentValue[key]] || []).push(
-                        currentValue
-                    );
-                    return result;
-                }, []);
-                return sanjay;
-            };
-    
-            if (groupvalue === "none") {
-                setGrp(false)
-            } else {
-                const personGroupedByColor = groupBy(alltransaction, groupvalue);
-                setGroupby(personGroupedByColor);
-                setGrp(true);
+            setIsloading(true)
+
+            function groupfunction(params) {
+                setIsloading(false)
+                const groupBy = (array, key) => {
+                    let sanjay = array.reduce((result, currentValue) => {
+                        (result[currentValue[key]] = result[currentValue[key]] || []).push(
+                            currentValue
+                        );
+                        return result;
+                    }, []);
+                    return sanjay;
+                };
+        
+                if (groupvalue === "none") {
+                    setGrp(false)
+                } else {
+                    const personGroupedByColor = groupBy(alltransaction, groupvalue);
+                    setGroupby(personGroupedByColor);
+                    setGrp(true);
+                }    
             }
+            setTimeout(groupfunction,1000)
         }
-            
     }, [groupvalue,alltransaction]);
 
     function Logout() {
@@ -59,22 +68,17 @@ export const Alltransaction = () => {
     }
 
     function deleterecord(d_id) {
-
-        axios.delete(`/deletetransactiondata?id=${d_id}`)
-
-        //  dispatch(deletetransactiondata(d_id))
+        axios.delete(`/deletetransactiondata?id=${d_id}`)        
          setDeletedata(d_id)
     }
 
     function group(event) {
-
         setGroupvalue(event.target.value)
-             
-    }     
-
+   }     
     return (
         <>
-            <div className="maingroupby">
+        {isloading?<Loader />:
+         ( <div><div className="maingroupby">
                 <div className="groupby">
                     <span className="spangroupby">Group By:</span>
                     <select
@@ -118,6 +122,8 @@ export const Alltransaction = () => {
                     <Table all={alltransaction} deleterecord={deleterecord} />
                 )}
             </div>
+            </div>
+        )}
         </>
     );
 };

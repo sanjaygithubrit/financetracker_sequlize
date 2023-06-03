@@ -20,5 +20,9 @@ router.delete('/deletetransactiondata',transactioncontroller.deletetransactionda
 
 router.post('/adtransactiondata',transactioncontroller.adtransactiondata)
 
+router.get('/getedittransactiondata',transactioncontroller.getedittransactiondata)
+
+router.put('/edittransactiondata',transactioncontroller.edittransactiondata)
+
 module.exports = router;
 

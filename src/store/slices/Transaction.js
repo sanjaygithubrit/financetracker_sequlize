@@ -1,18 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { useEffect } from "react";
-
-
-// const fun = async ()=>{
-
-// console.log("sanjay");
-//    let data = await fetch("http://localhost:8080/alltransaction")
-//   let a = await  data.json()
-//     console.log(a)
-//     return a;
-// }
-
  const initialState =[{
-
     id:1,
     transactiondate: "2023-05-02",
     month: "May 2023",
@@ -34,16 +21,6 @@ const transactionSlice = createSlice({
     addtransactiondata(state, action) {
       
       const adddata = action.payload;
-    //   console.log(state);
-    //   console.log(adddata,"first");
-    //   const len = state.reduce(sum => sum + 1, 0);
-      
-    //   console.log(len);
-    //   console.log(adddata,"ade");
-    //   const addid = state[len-1].id 
-    //   console.log(addid,"addidd");
-    //   adddata.id = addid+1;
-    //   state[len-1].id = len ;
       state.push(adddata);
     },
     edittransactiondata(state, action) {

@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
 export const View = () => {
 
     const location = useLocation();
-console.log(location.state,"viewwwwww");
+
     return (
         <>
   <div className="addtransactionmaindiv">
@@ -32,7 +32,7 @@ console.log(location.state,"viewwwwww");
             </tr>
             <tr>
                 <td>Receipt:</td>
-                <td><img src={location.state.receipt} /></td>
+                <td><img src={location.state.receipt} alt="img"/></td>
             </tr>
             <tr>
                 <td>Amount:</td>

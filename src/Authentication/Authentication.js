@@ -1,7 +1,5 @@
 
-import { Outlet,Navigate} from 'react-router-dom';
-
-
+import {Navigate} from 'react-router-dom';
 
 export default function Authentication (props) {
 const cmp = props.cmp;

@@ -8,9 +8,7 @@ var bodyParser = require('body-parser')
 // parse application/json
 app.use(bodyParser.json({limit: "50mb", extended: true}))
 app.use(bodyParser.urlencoded({limit: "50mb", extended: true}))
-// var cors = require('cors');
 
-// app.use(cors());
 
 const db = require("../models/index");
 
@@ -22,28 +20,42 @@ const alltransactiondata = async (req,res)=>{
 }
 
 const adtransactiondata = async (req,res)=>{
-
-    console.log(req.body,"req.body");
-
-    const jane = await transaction.create(req.body);
-    console.log(jane,"jane");
+     await transaction.create(req.body);
+    
 }
 
 const deletetransactiondata = async (req,res)=>{
 
 const d_id = req.query.id;
-console.log(d_id,"delete");
     await transaction.destroy({
         where: {
-           id: d_id //this will be your id that you want to delete
+           id: d_id 
         }
      })
-    // const data = await transaction.findAll();
-    // res.json(data);
+}
+const getedittransactiondata = 
+async (req,res)=>{
+    const id = req.query.id;
+    const data = await transaction.findAll({
+        where: {
+            id: id
+          }
+    });
+    res.json(data);
+}
+
+
+const edittransactiondata = 
+async (req,res)=>{
+    const id = req.query.id;
+    const data = await transaction.update(req.body, { where: { id: id } })
+    res.json(data);
 }
 
 module.exports = {
     alltransactiondata,
     deletetransactiondata,
     adtransactiondata,
+    getedittransactiondata,
+    edittransactiondata,
 }

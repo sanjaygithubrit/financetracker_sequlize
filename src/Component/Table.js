@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useContext } from "react";
+import React, { useState, useEffect } from "react";
 import "../../src/assets/style/Alltransaction.css";
 import { useNavigate } from "react-router-dom";
 
@@ -17,8 +17,7 @@ export const Table = (prop,deleterecord) => {
     });
     
     useEffect(() => {
-        console.log(prop.all,"prop.all");
-        setAlldata(prop.all);
+         setAlldata(prop.all);
    }, [prop]);
 
    const navigate = useNavigate();
@@ -222,7 +221,7 @@ export const Table = (prop,deleterecord) => {
                     <tbody>
                         {alltransaction.map((alltransaction, index) => (
                             <tr key={index}>
-                                <td>{alltransaction.transactiondate}</td>
+                                <td>{alltransaction.transactiondate.substring(0,10)}</td>
                                 <td>{alltransaction.month}</td>
                                 <td>{alltransaction.transactiontype}</td>
                                 <td>{alltransaction.fromaccount}</td>
@@ -231,7 +230,7 @@ export const Table = (prop,deleterecord) => {
                                     {new Intl.NumberFormat("en-IN").format(alltransaction.amount)}
                                 </td>
                                 <td>
-                                    <img src={alltransaction.receipt} />
+                                    <img src={alltransaction.receipt} alt="img"/>
                                 </td>
                                 <td>{alltransaction.notes}</td>
                                 <td onClick={() => View(alltransaction)}>View </td>

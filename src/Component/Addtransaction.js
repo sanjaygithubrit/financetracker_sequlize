@@ -7,53 +7,40 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux"
-import { addtransactiondata,edittransactiondata } from "../store/slices/Transaction";
 import { month,transactiontype,fromaccount,toaccount,transaction } from "../assets/constant/constant";
-// var express = require("express");
-// var cors = require('cors');
-// var app = express();
-
-// app.use(cors());
-
-// const express = require('express');
-// const cors = require('cors');
-
-// const app = express();
-
-// // 👇️ configure CORS
-// app.use(cors());
+import { Loader } from "./Loader";
 
 export const Addtransaction = () => {
 
-  const dispatch = useDispatch();
+
 
   const [addtransaction, setAddtransaction] = useState(transaction);
-
+  const [isloading, setIsloading] = useState(false);
  
   const navigate = useNavigate();
-
-const transactiondata = useSelector((state)=> state.transactions)
-
-
   var { id } = useParams();
 
+  useEffect(()=>{
+    setIsloading(true)
+    function loading(params) {
+      setIsloading(false)
+    }
+    setTimeout(loading,1000)
+  },[])  
+
   useEffect(() => {
-    if (id === undefined) {
 
-    } else {
-      
-      var editdata =[...transactiondata];
-      var idd = id
+    var value;
 
-      let index = editdata.findIndex(x => x.id == idd);
-
-      const value =  editdata[index];
-
-      for (let x in value) {
-        setValue(x,value[x])
-      }
-      setAddtransaction(value);
+    if (id !== undefined) {
+      axios.get(`/getedittransactiondata?id=${id}`).then((res)=>{
+        value = res.data[0]
+        console.log(value,"value");
+        for (let x in value) {
+          setValue(x,value[x])
+        }
+        setAddtransaction(value);
+    })
      }
   }, []);
 
@@ -138,37 +125,27 @@ data.receipt = url.toString();
   }
 
 if (id) {
-
- let editdata = {...data}
-    dispatch(edittransactiondata({id:id,data:editdata}))
-  
-} else {
-  let formdata = {...data}
-
+  const formdata = {...data}
   axios.request({
-
+    method: 'PUT',
+    url: `/edittransactiondata?id=${id}`,
+    data: formdata,
+  })
+} else {
+  const formdata = {...data}
+  axios.request({
     method: 'POST',
     url: `/adtransactiondata`,
     data: formdata,
-  
   })
-
-    // let newdata= {...data}
-    // const len = transactiondata.reduce(sum => sum + 1, 0);
-    // const addid = transactiondata[len-1].id 
-    // newdata.id = addid+1;
-    // dispatch(addtransactiondata(newdata))
 }
 reset();
-function myGreeting() {
-  navigate("/alltransaction");
-}
-setTimeout(myGreeting,1000);
-
+navigate("/alltransaction");
   };
 
   return (
     <>
+    {isloading?<Loader/>:(<div>
       <div className="finance">
         <h1 className="addmaindiv"> Finance Tracker</h1>
         <div className="addmaindiv">
@@ -280,7 +257,6 @@ setTimeout(myGreeting,1000);
              
               {...register("amount", { required: true })}
               placeholder="Enter Amount"
-              
             />
             {errors.amount && <p style={{ color: "red" }}>{errors.amount.message}</p>}
           </div>
@@ -301,7 +277,7 @@ setTimeout(myGreeting,1000);
                   }}, { required: true })}
               />):( 
                 <div>
-                <img src={addtransaction.receipt} />
+                <img src={addtransaction.receipt} alt="img"/>
                 <span style={{ color: "red" }} onClick={removeimage} >remove</span></div>)}
               <div>
              
@@ -322,16 +298,11 @@ setTimeout(myGreeting,1000);
           <br />
           <div>
                   <input className="addtransactionback1" type="submit"></input>
-                  <Link to="/alltransaction"> Alltransaction </Link>
-                </div>     
+                  </div>     
         </form>
       </div>
+      </div>
+    )}
     </>
   );
 };
-
-
-
-
-
-
